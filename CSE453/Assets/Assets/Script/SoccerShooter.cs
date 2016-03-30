@@ -5,29 +5,32 @@ public class SoccerShooter : MonoBehaviour {
 
 	GameObject soccer;
 	GameObject soccerHolder;
-	GameObject player;
 	Rigidbody rb;
 	public float SoccerSpeed=30f;
 	private float soccerMaxSpeed = 50f;
 	public bool hasBall=true;
 	public float fillAmount;
+	private bool shootTrigger;
+	Ethan ethan;
 	// Use this for initialization
 	void Start () {
 		soccerHolder = transform.Find ("soccerHolder").gameObject;
 		soccer = soccerHolder.transform.Find ("soccer").gameObject;
 		rb = soccer.GetComponent<Rigidbody> ();
-		player = this.gameObject;
 		fillAmount = SoccerSpeed / soccerMaxSpeed;
+
+		ethan = GetComponentInChildren<Ethan> ();
+		shootTrigger = ethan.shootDone;
 	}
 
 	// Update is called once per frame
 	void Update () {
-		if (Input.GetMouseButtonDown (0) && hasBall) {
-			hasBall = false;
-			soccer.transform.parent = null;
-			rb.isKinematic = false;
-			rb.velocity = Camera.main.transform.forward * SoccerSpeed;
+		shootTrigger = ethan.shootDone;
+
+		if (hasBall && shootTrigger) {
+			ShootSoccer ();
 		}
+
 		if (Input.GetKeyDown ("r") && hasBall == false) {
 			ResetSoccer ();
 		}
@@ -47,11 +50,20 @@ public class SoccerShooter : MonoBehaviour {
 		}
 	}
 
-	void ResetSoccer(){
+	public void ResetSoccer(){
 		hasBall = true;
 		rb.isKinematic = true;
 		soccer.transform.parent = soccerHolder.transform;
 		soccer.transform.localPosition = new Vector3 (0, 0, 0);
+	}
+
+	public void ShootSoccer() {
+		shootTrigger = false;
+		ethan.shootDone = false;
+		hasBall = false;
+		soccer.transform.parent = null;
+		rb.isKinematic = false;
+		rb.velocity = Camera.main.transform.forward * SoccerSpeed;
 	}
 
 }
