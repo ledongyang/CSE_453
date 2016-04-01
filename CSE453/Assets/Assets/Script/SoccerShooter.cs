@@ -43,9 +43,10 @@ public class SoccerShooter : MonoBehaviour {
 		fillAmount = SoccerSpeed / soccerMaxSpeed;
 	}
 
-	void OnTriggerEnter(Collider other){
-		if (other.gameObject.name == "soccerChild" && hasBall == false) {
-			Debug.Log ("pick up");
+	void OnControllerColliderHit (ControllerColliderHit hit){
+
+		if (hit.gameObject.name == "soccer" && hasBall == false) {
+			Debug.Log ("hit");
 			ResetSoccer ();
 		}
 	}

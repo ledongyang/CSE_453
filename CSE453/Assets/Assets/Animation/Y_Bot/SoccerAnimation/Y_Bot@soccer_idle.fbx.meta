@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 2ebbde25730cf4104b76cb262d14ed51
-timeCreated: 1459289756
+guid: 72a644f4d26024493bd9c7349e1c6b43
+timeCreated: 1459446660
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
@@ -141,7 +141,7 @@ ModelImporter:
     400130: mixamorig:Spine1
     400132: mixamorig:Spine2
     400134: //RootNode
-    7400000: soccer_pass
+    7400000: soccer_idle
     9500000: //RootNode
   materials:
     importMaterials: 1
@@ -165,18 +165,18 @@ ModelImporter:
     extraExposedTransformPaths: []
     clipAnimations:
     - serializedVersion: 16
-      name: soccer_pass
+      name: soccer_idle
       takeName: mixamo.com
-      firstFrame: 0
-      lastFrame: 48
+      firstFrame: 12
+      lastFrame: 13
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 0
-      loopBlend: 0
+      loopTime: 1
+      loopBlend: 1
       loopBlendOrientation: 0
       loopBlendPositionY: 0
       loopBlendPositionXZ: 0
@@ -187,15 +187,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events:
-      - time: 0.28585845
-        functionName: hasShootDone
-        data: 
-        objectReferenceParameter: {fileID: 100138, guid: 837fa98992f744bc59bac1d03f3b15e7,
-          type: 3}
-        floatParameter: 0
-        intParameter: 0
-        messageOptions: 0
+      events: []
       transformMask:
       - path: 
         weight: 1
