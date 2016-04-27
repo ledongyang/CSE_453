@@ -85,13 +85,13 @@ public class DataListener : MonoBehaviour {
         Vector3 left_orientation = new Vector3();
         Vector3 right_orientation = new Vector3();
 
-        left_orientation.x = System.Convert.ToSingle(measurements[0]);
-        left_orientation.y = System.Convert.ToSingle(measurements[1]);
-        left_orientation.z = System.Convert.ToSingle(measurements[2]);
+        left_orientation.x = System.Convert.ToSingle(measurements[1]);
+        left_orientation.y = System.Convert.ToSingle(measurements[2]);
+        left_orientation.z = System.Convert.ToSingle(measurements[0]);
 
-        right_orientation.x = System.Convert.ToSingle(measurements[3]);
-        right_orientation.y = System.Convert.ToSingle(measurements[4]);
-        right_orientation.z = System.Convert.ToSingle(measurements[5]);
+        right_orientation.x = System.Convert.ToSingle(measurements[4]);
+        right_orientation.y = System.Convert.ToSingle(measurements[5]);
+        right_orientation.z = System.Convert.ToSingle(measurements[3]);
 
         GameObject left_foot = GameObject.FindGameObjectWithTag("LeftFoot");
         left_foot.transform.eulerAngles = left_orientation;
