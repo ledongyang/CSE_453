@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/Assets/Scenes/FirstPerson1.unity
+- path: Assets/Assets/Scenes/polyisland.unity
   isLoaded: 1
   isActive: 1
