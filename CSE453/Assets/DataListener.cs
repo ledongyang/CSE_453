@@ -72,6 +72,12 @@ public class DataListener : MonoBehaviour {
             int bytesReceived = _dataSocket.Receive(_receiveBuffer, toRead, SocketFlags.None);
             UpdateReceivedData(_receiveBuffer, bytesReceived);
         }
+        
+        GameObject left_foot = GameObject.FindGameObjectWithTag("LeftFoot");
+        left_foot.transform.eulerAngles = Vector3.Lerp(left_foot.transform.eulerAngles, left_orientation, Time.deltaTime);
+
+        GameObject right_foot = GameObject.FindGameObjectWithTag("RightFoot");
+        right_foot.transform.eulerAngles = Vector3.Lerp(right_foot.transform.eulerAngles, right_orientation, Time.deltaTime);
     }
 
     void HandleMessage(string message) {
@@ -92,11 +98,5 @@ public class DataListener : MonoBehaviour {
         right_orientation.x = -1 * System.Convert.ToSingle(measurements[4]);
         right_orientation.y = -1 * System.Convert.ToSingle(measurements[5]);
         right_orientation.z = -1 * System.Convert.ToSingle(measurements[3]);
-
-        GameObject left_foot = GameObject.FindGameObjectWithTag("LeftFoot");
-        left_foot.transform.eulerAngles = left_orientation;
-
-        GameObject right_foot = GameObject.FindGameObjectWithTag("RightFoot");
-        right_foot.transform.eulerAngles = right_orientation;
     }
 }
