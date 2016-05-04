@@ -51,12 +51,12 @@ public class DataListener : MonoBehaviour {
     }
 
 	// Use this for initialization
-	void Start () {
+    void Start () {
         WaitForClient();
-	}
+    }
 	
 	// Update is called once per frame
-	void Update () {
+    void Update () {
         // Check if there is data in socket
         if (_dataSocket.Available > 0) {
             Debug.Log("Data available!");
@@ -70,7 +70,7 @@ public class DataListener : MonoBehaviour {
             int bytesReceived = _dataSocket.Receive(_receiveBuffer, toRead, SocketFlags.None);
             UpdateReceivedData(_receiveBuffer, bytesReceived);
         }
-	}
+    }
 
     void HandleMessage(string message) {
         // message should be a string with the following format:
