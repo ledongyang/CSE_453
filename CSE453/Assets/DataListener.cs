@@ -79,10 +79,11 @@ public class DataListener : MonoBehaviour {
         // left_roll left_pitch left_yaw right_roll right_pitch right_yaw
         char[] delimiterChars = {' '};
         string[] measurements = message.Split(delimiterChars);
+        /*
         if (measurements.Length != 6) {
             Debug.Log("Message in incorrect format.");
             return;
-        }
+        }*/
 
         left_orientation.x = -1 * System.Convert.ToSingle(measurements[1]);
         left_orientation.y = -1 * System.Convert.ToSingle(measurements[2]);
