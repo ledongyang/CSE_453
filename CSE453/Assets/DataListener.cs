@@ -11,6 +11,8 @@ public class DataListener : MonoBehaviour {
     private byte[] _receiveBuffer = new byte[1024];
     private ArrayList _messageBuffer = new ArrayList();
     private Socket _dataSocket;
+    private Vector3 left_orientation = new Vector3();
+    private Vector3 right_orientation = new Vector3();
 
     private void WaitForClient() {
         try {
@@ -81,9 +83,6 @@ public class DataListener : MonoBehaviour {
             Debug.Log("Message in incorrect format.");
             return;
         }
-
-        Vector3 left_orientation = new Vector3();
-        Vector3 right_orientation = new Vector3();
 
         left_orientation.x = -1 * System.Convert.ToSingle(measurements[1]);
         left_orientation.y = -1 * System.Convert.ToSingle(measurements[2]);
