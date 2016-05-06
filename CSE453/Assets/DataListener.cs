@@ -84,6 +84,8 @@ public class DataListener : MonoBehaviour {
 
         Vector3 left_orientation = new Vector3();
         Vector3 right_orientation = new Vector3();
+		Vector3 left_accelerate = new Vector3 ();
+		Vector3 right_accelerate = new Vector3 ();
 
         left_orientation.x = System.Convert.ToSingle(measurements[1]);
         left_orientation.y = System.Convert.ToSingle(measurements[2]);
@@ -93,10 +95,30 @@ public class DataListener : MonoBehaviour {
         right_orientation.y = System.Convert.ToSingle(measurements[5]);
         right_orientation.z = System.Convert.ToSingle(measurements[3]);
 
+		left_accelerate.x = 1;
+		left_accelerate.y = 1;
+		left_accelerate.z = 1;
+
+		right_accelerate.x = 1;
+		right_accelerate.y = 1;
+		right_accelerate.z = 1;
+
         GameObject left_foot = GameObject.FindGameObjectWithTag("LeftFoot");
         left_foot.transform.eulerAngles = left_orientation;
 
         GameObject right_foot = GameObject.FindGameObjectWithTag("RightFoot");
         right_foot.transform.eulerAngles = right_orientation;
+
+		Rigidbody left_foot_rb = left_foot.GetComponent<Rigidbody> ();
+		Rigidbody right_foot_rb = right_foot.GetComponent<Rigidbody> ();
+
+		float left_foot_accele = Mathf.Sqrt (Mathf.Pow (left_accelerate.x, 2) + Mathf.Pow (left_accelerate.y, 2) + Mathf.Pow (left_accelerate.z, 2));
+		float left_foot_speed = left_foot_accele*Time.deltaTime;
+		Vector3 left_foot_direc = new Vector3(left_accelerate.x/left_foot_accele,left_accelerate.y/left_foot_accele,left_accelerate.z/left_foot_accele);
+		left_foot_rb.velocity = left_foot_speed * left_foot_direc;
+		float right_foot_accele = Mathf.Sqrt (Mathf.Pow (right_accelerate.x, 2) + Mathf.Pow (right_accelerate.y, 2) + Mathf.Pow (right_accelerate.z, 2));
+		float right_foot_speed = right_foot_accele*Time.deltaTime;
+		Vector3 right_foot_direc = new Vector3(right_accelerate.x/right_foot_accele,right_accelerate.y/right_foot_accele,right_accelerate.z/right_foot_accele);
+		right_foot_rb.velocity = right_foot_speed * right_foot_direc;
     }
 }
