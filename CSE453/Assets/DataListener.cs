@@ -91,17 +91,17 @@ public class DataListener : MonoBehaviour {
         left_orientation.y = System.Convert.ToSingle(measurements[2]);
         left_orientation.z = System.Convert.ToSingle(measurements[0]);
 
-        right_orientation.x = System.Convert.ToSingle(measurements[4]);
-        right_orientation.y = System.Convert.ToSingle(measurements[5]);
-        right_orientation.z = System.Convert.ToSingle(measurements[3]);
+        right_orientation.x = System.Convert.ToSingle(measurements[1]);
+        right_orientation.y = System.Convert.ToSingle(measurements[2]);
+        right_orientation.z = System.Convert.ToSingle(measurements[0]);
 
-		left_accelerate.x = 1;
-		left_accelerate.y = 1;
-		left_accelerate.z = 1;
+		left_accelerate.x = System.Convert.ToSingle(measurements[4]);
+		left_accelerate.y = System.Convert.ToSingle(measurements[5]);
+		left_accelerate.z = System.Convert.ToSingle(measurements[6]);
 
-		right_accelerate.x = 1;
-		right_accelerate.y = 1;
-		right_accelerate.z = 1;
+		right_accelerate.x = System.Convert.ToSingle(measurements[4]);
+		right_accelerate.y = System.Convert.ToSingle(measurements[5]);
+		right_accelerate.z = System.Convert.ToSingle(measurements[6]);
 
         GameObject left_foot = GameObject.FindGameObjectWithTag("LeftFoot");
         left_foot.transform.eulerAngles = left_orientation;
