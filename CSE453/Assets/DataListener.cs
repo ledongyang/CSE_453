@@ -77,10 +77,11 @@ public class DataListener : MonoBehaviour {
         // left_roll left_pitch left_yaw right_roll right_pitch right_yaw
         char[] delimiterChars = {' '};
         string[] measurements = message.Split(delimiterChars);
-        if (measurements.Length != 6) {
+        /*
+		if (measurements.Length != 6) {
             Debug.Log("Message in incorrect format.");
             return;
-        }
+        }*/
 
         Vector3 left_orientation = new Vector3();
         Vector3 right_orientation = new Vector3();
@@ -89,9 +90,9 @@ public class DataListener : MonoBehaviour {
         left_orientation.y = -1 * System.Convert.ToSingle(measurements[2]);
         left_orientation.z = -1 * System.Convert.ToSingle(measurements[0]);
 
-        right_orientation.x = -1 * System.Convert.ToSingle(measurements[4]);
-        right_orientation.y = -1 * System.Convert.ToSingle(measurements[5]);
-        right_orientation.z = -1 * System.Convert.ToSingle(measurements[3]);
+        right_orientation.x = -1 * System.Convert.ToSingle(measurements[1]);
+        right_orientation.y = -1 * System.Convert.ToSingle(measurements[2]);
+        right_orientation.z = -1 * System.Convert.ToSingle(measurements[0]);
 
         GameObject left_foot = GameObject.FindGameObjectWithTag("LeftFoot");
         left_foot.transform.eulerAngles = left_orientation;
