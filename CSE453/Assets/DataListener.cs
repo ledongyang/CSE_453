@@ -12,6 +12,15 @@ public class DataListener : MonoBehaviour {
     private ArrayList _messageBuffer = new ArrayList();
     private Socket _dataSocket;
 
+	public Vector3 left_orientation = new Vector3();
+	public Vector3 right_orientation = new Vector3();
+	public Vector3 left_accelerate_raw = new Vector3();
+	public Vector3 right_accelerate_raw = new Vector3();
+	Vector3 left_accelerate_prev = new Vector3 (0,0,0);
+	Vector3 right_accelerate_prev = new Vector3(0,0,0);
+	public Vector3 left_accelerate = new Vector3();
+	public Vector3 right_accelerate = new Vector3();
+
     private void WaitForClient() {
         try {
            _serverSocket.Bind(new IPEndPoint(IPAddress.Any, 6000));
@@ -40,7 +49,7 @@ public class DataListener : MonoBehaviour {
         for (int i = 0; i < len; i++) {
             if (buf[i] == '\n') {
                 // Message Complete. Message buffer contains a complete data point
-                Debug.Log("Received a complete message.");
+                //Debug.Log("Received a complete message.");
                 string message = array_list_to_string(_messageBuffer);
                 HandleMessage(message);
                 _messageBuffer.Clear();
@@ -59,7 +68,7 @@ public class DataListener : MonoBehaviour {
 	void Update () {
         // Check if there is data in socket
         if (_dataSocket.Available > 0) {
-            Debug.Log("Data available!");
+            //Debug.Log("Data available!");
             int toRead;
             // Read either the entire amount available, or the size of the receive buffer. Whichever is smaller.
             if (_dataSocket.Available > _receiveBuffer.Length) {
@@ -73,35 +82,39 @@ public class DataListener : MonoBehaviour {
 	}
 
     void HandleMessage(string message) {
+		//Debug.Log ("MESSAGE: " + message);
         // message should be a string with the following format:
-        // left_roll left_pitch left_yaw right_roll right_pitch right_yaw
-        char[] delimiterChars = {' '};
-        string[] measurements = message.Split(delimiterChars);
-        if (measurements.Length != 6) {
+        // left_roll left_pitch left_yaw right_roll right_pitch right_yaw accX accY accZ
+        char delimiterChars = ' ';
+        string[] measurements = message.Split(' ');
+
+		//Debug.Log (measurements.Length);
+		/*
+		for (int i = 0; i < measurements.Length-1; i++) {
+			Debug.Log ("DATA INDEX: "+ i + "VALUE: " + measurements[i]);
+		}
+	*/
+        
+		if (measurements.Length != 8) {
             Debug.Log("Message in incorrect format.");
             return;
         }
 
-        Vector3 left_orientation = new Vector3();
-        Vector3 right_orientation = new Vector3();
-		Vector3 left_accelerate = new Vector3 ();
-		Vector3 right_accelerate = new Vector3 ();
+        left_orientation.x = -1 * System.Convert.ToSingle(measurements[1]);
+        left_orientation.y = -1 * System.Convert.ToSingle(measurements[2]);
+        left_orientation.z = -1 * System.Convert.ToSingle(measurements[0]);
 
-        left_orientation.x = System.Convert.ToSingle(measurements[1]);
-        left_orientation.y = System.Convert.ToSingle(measurements[2]);
-        left_orientation.z = System.Convert.ToSingle(measurements[0]);
+        right_orientation.x = -1 * System.Convert.ToSingle(measurements[1]);
+        right_orientation.y = -1 * System.Convert.ToSingle(measurements[2]);
+        right_orientation.z = -1 * System.Convert.ToSingle(measurements[0]);
 
-        right_orientation.x = System.Convert.ToSingle(measurements[1]);
-        right_orientation.y = System.Convert.ToSingle(measurements[2]);
-        right_orientation.z = System.Convert.ToSingle(measurements[0]);
+		left_accelerate_raw.x = System.Convert.ToSingle(measurements[4]);
+		left_accelerate_raw.y = System.Convert.ToSingle(measurements[6]);
+		left_accelerate_raw.z = System.Convert.ToSingle(measurements[5]);
 
-		left_accelerate.x = System.Convert.ToSingle(measurements[4]);
-		left_accelerate.y = System.Convert.ToSingle(measurements[5]);
-		left_accelerate.z = System.Convert.ToSingle(measurements[6]);
-
-		right_accelerate.x = System.Convert.ToSingle(measurements[4]);
-		right_accelerate.y = System.Convert.ToSingle(measurements[5]);
-		right_accelerate.z = System.Convert.ToSingle(measurements[6]);
+		right_accelerate_raw.x = System.Convert.ToSingle(measurements[4]);
+		right_accelerate_raw.y = System.Convert.ToSingle(measurements[6]);
+		right_accelerate_raw.z = System.Convert.ToSingle(measurements[5]);
 
         GameObject left_foot = GameObject.FindGameObjectWithTag("LeftFoot");
         left_foot.transform.eulerAngles = left_orientation;
@@ -109,16 +122,62 @@ public class DataListener : MonoBehaviour {
         GameObject right_foot = GameObject.FindGameObjectWithTag("RightFoot");
         right_foot.transform.eulerAngles = right_orientation;
 
-		Rigidbody left_foot_rb = left_foot.GetComponent<Rigidbody> ();
-		Rigidbody right_foot_rb = right_foot.GetComponent<Rigidbody> ();
+		//Debug.Log ("X BEFORE FILTER:" +left_accelerate_raw.x);
+		if (Mathf.Abs(left_accelerate_raw.x) < 0.05f) {
+			left_accelerate.x = 0f;
+			right_accelerate.x = 0f;
+		} else {
+			left_accelerate.x = left_accelerate_raw.x;
+			right_accelerate.x = right_accelerate_raw.x;
+		}
+		//Debug.Log ("Z BEFORE FILTER:" +left_accelerate_raw.z);
+		if (Mathf.Abs(left_accelerate_raw.z) < 0.05f) {
+			left_accelerate.z = 0f;
+			right_accelerate.z = 0f;
+		}
+		else{
+			left_accelerate.z = left_accelerate_raw.z;
+			right_accelerate.z = right_accelerate_raw.z;
+		}
 
-		float left_foot_accele = Mathf.Sqrt (Mathf.Pow (left_accelerate.x, 2) + Mathf.Pow (left_accelerate.y, 2) + Mathf.Pow (left_accelerate.z, 2));
-		float left_foot_speed = left_foot_accele*Time.deltaTime;
-		Vector3 left_foot_direc = new Vector3(left_accelerate.x/left_foot_accele,left_accelerate.y/left_foot_accele,left_accelerate.z/left_foot_accele);
-		left_foot_rb.velocity = left_foot_speed * left_foot_direc;
-		float right_foot_accele = Mathf.Sqrt (Mathf.Pow (right_accelerate.x, 2) + Mathf.Pow (right_accelerate.y, 2) + Mathf.Pow (right_accelerate.z, 2));
-		float right_foot_speed = right_foot_accele*Time.deltaTime;
-		Vector3 right_foot_direc = new Vector3(right_accelerate.x/right_foot_accele,right_accelerate.y/right_foot_accele,right_accelerate.z/right_foot_accele);
-		right_foot_rb.velocity = right_foot_speed * right_foot_direc;
+		if (Mathf.Abs (left_accelerate_raw.y - 2.7f) < 0.02f) {
+			left_accelerate.y = 0f;
+			right_accelerate.y = 0f;
+		} else {
+			left_accelerate.y = left_accelerate_raw.y - 2.7f;
+			right_accelerate.y = right_accelerate_raw.y - 2.7f;
+		}
+			
+		//left_accelerate.y = left_accelerate_raw.y - 2.7f;
+		//right_accelerate.y = right_accelerate_raw.y - 2.7f;
+	
+		if ((left_accelerate.x < left_accelerate_prev.x - 0.5f) || (left_accelerate.x > left_accelerate_prev.x + 0.5f)) {
+			//REJECT NEW ACCELERATION
+			//Debug.Log ("X-- ACCELERATION REJECTED!!!!: "+ left_accelerate.x);
+			if (left_accelerate.x != 0) {
+				left_accelerate.x = left_accelerate_prev.x;
+			}
+		}
+
+		if ((left_accelerate.y < left_accelerate_prev.y - 0.8f) || (left_accelerate.y > left_accelerate_prev.y + 0.5f)) {
+			//REJECT NEW ACCELERATION
+			//Debug.Log ("Y-- ACCELERATION REJECTED!!!!: "+ left_accelerate.y);
+			if (left_accelerate.y != 0) {
+				left_accelerate.y = left_accelerate_prev.y;
+			}
+		}
+
+		if ((left_accelerate.z < left_accelerate_prev.z - 0.5f) || (left_accelerate.z > left_accelerate_prev.z + 0.5f)) {
+			//REJECT NEW ACCELERATION
+			//Debug.Log ("Z-- ACCELERATION REJECTED!!!!: "+ left_accelerate.z);
+			if (left_accelerate.z != 0) {
+				left_accelerate.z = left_accelerate_prev.z;
+			}
+		}
+		right_accelerate = left_accelerate;
+		Debug.Log ("ACCELERATION VECTOR: "+right_accelerate);
+
+		left_accelerate_prev = left_accelerate;
+		right_accelerate_prev = right_accelerate;
     }
 }
